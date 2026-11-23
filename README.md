@@ -2,25 +2,22 @@
 
 Studio desain grafis lower third profesional berbasis browser dengan ekspor PNG transparan (RGBA / Alpha Channel) untuk CapCut, VN, Premiere Pro, DaVinci Resolve, OBS, dan kebutuhan UKIN PPG.
 
-Aplikasi berjalan 100% di sisi klien tanpa membutuhkan backend, login, ataupun database eksternal.
+## Cara Deploy ke Netlify (Pilih Salah Satu)
 
-## File HTML Tunggal (Standalone)
+### Opsi 1: Langsung Drag & Drop Tanpa Build (`netlify-drop/`)
+Folder **`netlify-drop/`** sudah berisi `index.html` (versi tunggal siap pakai) dan `_redirects`:
+1. Unduh / ekstrak project ini.
+2. Buka **[app.netlify.com/drop](https://app.netlify.com/drop)**.
+3. Seret folder **`netlify-drop`** (bukan folder root project!) ke halaman Netlify Drop.
+4. Selesai — situs langsung aktif.
 
-Saat build dijalankan (`npm run build`), seluruh aplikasi (HTML, CSS, JavaScript, 26 template, editor grafis, dan mesin ekspor PNG transparan) digabung menjadi **satu file HTML mandiri**:
-- `lower-third-studio.html` (tersedia langsung di root project—dapat langsung dibuka di browser)
-- `dist/index.html` (versi tunggal siap deploy untuk Netlify)
+> **Catatan Penting**: Jangan menyeret folder root project ke Netlify Drop karena `index.html` di root adalah file entry development Vite (`/src/main.tsx`). Selalu seret folder `netlify-drop/` atau `dist/`.
 
-## Cara Deploy ke Netlify
-
-### Opsi 1: Deploy Otomatis via Git (GitHub / GitLab / Bitbucket)
-1. Push repository ini ke GitHub, GitLab, atau Bitbucket.
-2. Masuk ke dashboard **Netlify** → **Add new site** → **Import an existing project**.
-3. Pilih repository Anda. Netlify akan otomatis membaca `netlify.toml` (`npm run build`, publish `dist`).
+### Opsi 2: Deploy Otomatis via Git (GitHub / GitLab / Bitbucket)
+1. Push repository ini ke GitHub/GitLab/Bitbucket.
+2. Di dashboard **Netlify** → **Add new site** → **Import an existing project**.
+3. Netlify akan otomatis menggunakan `netlify.toml` dan `.npmrc` (`NPM_FLAGS=--legacy-peer-deps`, `NODE_VERSION=22`, build `npm run build`, publish `dist`).
 4. Klik **Deploy site**.
-
-### Opsi 2: Manual Drag & Drop (Netlify Drop)
-1. Jalankan `npm install && npm run build`.
-2. Buka [app.netlify.com/drop](https://app.netlify.com/drop) dan seret folder **`dist/`** (atau file tunggal `dist/index.html` di dalamnya).
 
 ### Opsi 3: Via Netlify CLI
 ```bash
@@ -28,3 +25,6 @@ npm install
 npm run build
 npx netlify-cli deploy --prod --dir=dist
 ```
+
+## File HTML Tunggal (Offline / Lokal)
+File **`lower-third-studio.html`** di root project berisi seluruh aplikasi dalam 1 file HTML mandiri.

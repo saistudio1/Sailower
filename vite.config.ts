@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import {defineConfig, type Plugin} from 'vite';
 
+const ROOT_DIR = import.meta.dirname;
+
 function singleFileHtmlPlugin(): Plugin {
   return {
     name: 'single-file-html-bundle',
@@ -51,10 +53,21 @@ function singleFileHtmlPlugin(): Plugin {
     },
     closeBundle(error?: Error): void {
       if (error) return;
-      const distIndex = path.resolve(__dirname, 'dist/index.html');
-      const standaloneHtml = path.resolve(__dirname, 'lower-third-studio.html');
+      const distDir = path.resolve(ROOT_DIR, 'dist');
+      const distIndex = path.resolve(distDir, 'index.html');
+      const distRedirects = path.resolve(distDir, '_redirects');
+
       if (fs.existsSync(distIndex)) {
-        fs.copyFileSync(distIndex, standaloneHtml);
+        // 1. Standalone single HTML file at root
+        fs.copyFileSync(distIndex, path.resolve(ROOT_DIR, 'lower-third-studio.html'));
+
+        // 2. Ready-to-drag Netlify Drop folder (contains index.html + _redirects)
+        const netlifyDropDir = path.resolve(ROOT_DIR, 'netlify-drop');
+        fs.mkdirSync(netlifyDropDir, {recursive: true});
+        fs.copyFileSync(distIndex, path.resolve(netlifyDropDir, 'index.html'));
+        if (fs.existsSync(distRedirects)) {
+          fs.copyFileSync(distRedirects, path.resolve(netlifyDropDir, '_redirects'));
+        }
       }
     },
   };
@@ -76,8 +89,8 @@ export default defineConfig(() => {
           if (error) {
             return;
           }
-          const distDir = path.resolve(__dirname, 'dist');
-          const srcAssets = path.resolve(__dirname, 'src/assets');
+          const distDir = path.resolve(ROOT_DIR, 'dist');
+          const srcAssets = path.resolve(ROOT_DIR, 'src/assets');
           const distAssets = path.resolve(distDir, 'src/assets');
           if (fs.existsSync(distDir) && fs.existsSync(srcAssets)) {
             fs.cpSync(srcAssets, distAssets, {recursive: true, force: true});
@@ -92,13 +105,12 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           format: 'iife' as const,
-          inlineDynamicImports: true,
         },
       },
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(ROOT_DIR, '.'),
       },
     },
     server: {
