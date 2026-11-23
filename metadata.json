@@ -1,0 +1,8 @@
+{
+  "name": "Lower Third Studio",
+  "description": "Studio desain grafis lower third profesional berbasis browser dengan ekspor PNG transparan RGBA untuk video editing, broadcasting, konten kreator, dan UKIN PPG.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
